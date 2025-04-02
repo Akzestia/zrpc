@@ -1,8 +1,8 @@
-### zrpc Types
+"### zrpc Types
 
 
 | Type         | Definition                               |
-|:------------:| ---------------------------------------- |
+|:------------:|:---------------------------------------- |
 | u32_id       | `32 bytes` generic id                    |
 | u64_id       | `64 bytes` generic id                    |
 | uname        | `32 bytes` fixed length user name        |
