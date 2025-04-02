@@ -1,0 +1,3 @@
+scheme Server {
+    server_id: u64_id
+}

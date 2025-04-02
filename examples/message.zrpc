@@ -1,0 +1,7 @@
+import 'user.zrpc'
+
+scheme Message {
+    sender      User
+    receiver    User
+    sent_at     time
+}

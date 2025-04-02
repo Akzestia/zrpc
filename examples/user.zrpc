@@ -1,0 +1,5 @@
+scheme User {
+    user_name:      uname
+    user_email:     uemail
+    user_password:  upassword
+}
