@@ -4,6 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+tree-sitter = "0.25.3"
+tree-sitter-zrpc = "0.1.0"
+walkdir = "2.5.0"
 
 
 [lib]
