@@ -1,4 +1,4 @@
-"### zrpc Types
+### zrpc Types
 
 
 | Type         | Definition                               |
