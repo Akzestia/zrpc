@@ -7,3 +7,8 @@
 > [zed-language-extension](https://github.com/Akzestia/zed-zrpc)
 
 A tool for creating typed RPC communication over QUIC protocol.
+
+### Supported languages
+
+- [X] C++
+- [X] Rust
