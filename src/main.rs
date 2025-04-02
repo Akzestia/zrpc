@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 use std::str::FromStr;
+use walkdir::WalkDir;
 
 use zrpc::*;
 
@@ -34,7 +35,8 @@ fn get_schemas(dir_path: PathBuf, recursive: bool) -> Vec<PathBuf> {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = std::env::args().collect();
-    if args.len() < 3 {
+
+    if args.len() < 1 {
         print_usage();
         return Ok(());
     }
@@ -42,11 +44,27 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut i = 1;
 
     let mut lang = "";
+    let mut out_dir = PathBuf::from("zrpc_bindings");
     let mut path = std::env::current_dir()?;
     let mut recursive = false;
 
     while i < args.len() {
         match args[i].as_str() {
+            "--clear" => {
+                let mut found = false;
+                for entry in WalkDir::new(&path).into_iter().filter_map(|e| e.ok()) {
+                    if entry.file_type().is_dir() && entry.file_name() == "zrpc_bindings" {
+                        std::fs::remove_dir_all(entry.path()).expect("Failed to clean up");
+                        found = true;
+                        break;
+                    }
+                }
+                if !found {
+                    println!("Nothing to cleanup!");
+                }
+                return Ok(());
+            }
+
             "-r" | "--recursive" => recursive = true,
 
             "-l" | "--language" => match args[i + 1].as_str() {
@@ -54,8 +72,8 @@ fn main() -> Result<(), Box<dyn Error>> {
                     lang = "c++";
                     i += 1;
                 }
-                "rust" => {
-                    lang = "rust";
+                "rs" => {
+                    lang = "rs";
                     i += 1;
                 }
 
@@ -77,6 +95,21 @@ fn main() -> Result<(), Box<dyn Error>> {
                         return Ok(());
                     }
                     path = temp_buf;
+                    i += 1;
+                }
+            }
+
+            "-od" | "--out-dir" => {
+                if args[i + 1].as_str().len() <= 0 {
+                    println!("\n\tOutput directory path wasn't specified!");
+                    return Ok(());
+                } else {
+                    let temp_buf: PathBuf = PathBuf::from_str(args[i + 1].as_str())?;
+                    if !temp_buf.exists() {
+                        println!("\n\tSpecified output directory path doesn't exist");
+                        return Ok(());
+                    }
+                    out_dir = temp_buf;
                     i += 1;
                 }
             }
@@ -103,10 +136,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     match lang {
         "c++" => {
-            cpp_gen::create_zrpc_bindings(&schemas)?;
+            cpp_gen::create_zrpc_bindings(&schemas, &out_dir)?;
         }
         "rs" => {
-            rust_gen::create_zrpc_bindings(&schemas)?;
+            rust_gen::create_zrpc_bindings(&schemas, &out_dir)?;
         }
 
         _ => {
