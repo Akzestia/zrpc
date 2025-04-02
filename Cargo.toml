@@ -1,0 +1,11 @@
+[package]
+name = "zrpc"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+
+[lib]
+name = "zrpc"
+path = "src/lib.rs"
