@@ -115,6 +115,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
 
             _ => {
+                println!("Incorrecet args! {}", args[i].to_string());
                 print_usage();
                 return Ok(());
             }
