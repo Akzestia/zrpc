@@ -7,7 +7,14 @@ use walkdir::WalkDir;
 use zrpc::*;
 
 fn print_usage() {
-    println!("\n\tZrpc Usage:");
+    println!("\nZrpc Usage:");
+    println!("  -c, --clear        Remove existing zrpc_bindings directory");
+    println!("  -r, --recursive    Recursively search for .zrpc files in subdirectories");
+    println!("  -l, --language     Target language for bindings (supported: 'c++', 'rs')");
+    println!("  -p, --path         Source directory containing .zrpc files (default: current dir)");
+    println!(
+        "  -od, --out-dir     Output directory for generated bindings (default: 'zrpc_bindings')"
+    );
 }
 
 fn get_schemas(dir_path: PathBuf, recursive: bool) -> Vec<PathBuf> {
@@ -36,7 +43,7 @@ fn get_schemas(dir_path: PathBuf, recursive: bool) -> Vec<PathBuf> {
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = std::env::args().collect();
 
-    if args.len() < 1 {
+    if args.len() <= 1 {
         print_usage();
         return Ok(());
     }
@@ -50,7 +57,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     while i < args.len() {
         match args[i].as_str() {
-            "--clear" => {
+            "-c" | "--clear" => {
                 let mut found = false;
                 for entry in WalkDir::new(&path).into_iter().filter_map(|e| e.ok()) {
                     if entry.file_type().is_dir() && entry.file_name() == "zrpc_bindings" {
